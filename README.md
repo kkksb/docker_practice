@@ -12,11 +12,12 @@ Docker Desktop for Windows
 
 Docker入門
 
-## Dockerfileからapache tomcatをbuildする練習
+## Dockerfileからapacheをbuildする練習
 
 rootディレクトリの中身を使ってbuildする。
 
 ```
+$ cd httpd
 $ docker build -t apache-image .
 ```
 
