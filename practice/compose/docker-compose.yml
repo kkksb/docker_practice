@@ -43,9 +43,22 @@ services:
   wp-container:
     image: wordpress
     environment:
-      - WORDPRESS_DB_HOST=mysql-container
-      - WORDPRESS_DB_USERNAME=root
-      - WORDPRESS_DB_HOST=dbpass01
+      - WORDPRESS_DB_HOST=mysql-container:3306
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=dbpass01
+    ports:
+      - 80:80
+    depends_on:
+      - mysql-container
+    restart: always
+
+  # Redmine
+  rm-container:
+    image: redmine
+    environment:
+      - REDMINE_DB_MYSQL=mysql-container
+      - REDMINE_DB_USERNAME=root
+      - REDMINE_DB_PASSWORD=dbpass01
     ports:
       - 3000:3000
     depends_on:

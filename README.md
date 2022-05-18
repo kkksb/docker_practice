@@ -38,3 +38,20 @@ $ docker run --volumes-from apachelog-container -p 80:80 -d --name=apache-contai
 ```
 $ docker run --rm --volumes-from apachelog-container -it ubuntu /bin/bash
 ```
+
+## docker-compose
+
+### 起動
+
+```
+$ cd practice/compose
+$ docker-compose up -d
+```
+
+各アプリケーションは、ymlファイルから確認する
+
+### トラブル
+
+WordPressがDBに接続できない。
+原因はよくわからないが、やめる。
+
