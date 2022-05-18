@@ -1,0 +1,58 @@
+# version1も存在するが、互換性が低いらしい
+version: "2"
+
+services:
+  # データボリュームコンテナ
+  db-container:
+    image: busybox
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  # MySQLのコンテナ
+  mysql-container:
+    image: mysql:8
+    # コンテナ内で設定する環境変数
+    # こちらをもとに、ミドルウェアの変数を変更する
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbpass01
+      - MYSQL_DATABASE=redmine
+    # 以下は、mysqldコマンドのオプションとなる
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+    volumes_from:
+      - db-container
+    # ボリュームコンテナがないといけないので、起動順を指定
+    depends_on:
+      - db-container
+    restart: always
+
+  # phpmyadmin
+  pma-container:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql-container
+      - PMA_USER=root
+      - PMA_PASSWORD=dbpass01
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql-container
+    # 異常事態があったときに再起動を行う
+    restart: always
+
+  # wordpressの設計
+  wp-container:
+    image: wordpress
+    environment:
+      - WORDPRESS_DB_HOST=mysql-container
+      - WORDPRESS_DB_USERNAME=root
+      - WORDPRESS_DB_HOST=dbpass01
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql-container
+    restart: always
+
+# ボリュームコンテナで使用するボリューム
+volumes:
+  db-volume:
+      
